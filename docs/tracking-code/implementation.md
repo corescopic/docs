@@ -24,4 +24,4 @@ After the installation, corescopic will automatically track new page views and a
 ✨ Next steps:
 - Implement [Consented Mode](/docs/tracking-code/consent-mode) to get more data
 - Track [events](/docs/tracking-code/events) to gain more insights
-- Import [additional modules](/docs/tracking-code/modules) to fit your page
+- Import [additional modules](/docs/tracking-code/modules/usage) to fit your page

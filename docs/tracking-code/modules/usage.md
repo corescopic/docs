@@ -8,7 +8,7 @@ The main corescopic tracking code is kept lean to not waste additional network t
 
 Intead of shipping everything in the main package, optional modules can be loaded that provide additional functionality automatically.
 
-corescopic has with a number of official modules, you may however decide to load any third-party module or even [develop your own, custom modules](/docs/tracking-code/developing-modules) for corescopic.
+corescopic has with a number of official modules, you may however decide to load any third-party module or even [develop your own, custom modules](/docs/tracking-code/modules/developing-modules) for corescopic.
 
 To load a module script into the corescopic tracker, simply push the module URL to the `window.corescopic.modules` array and corescopic will load and set up the module automatically.
 
