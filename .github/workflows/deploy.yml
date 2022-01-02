@@ -13,12 +13,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14.x
-          cache: yarn
+          cache: npm
       - name: Build website
         working-directory: website
         run: |
-          yarn install --frozen-lockfile
-          yarn build
+          npm ci
+          npm run build
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
@@ -34,3 +34,4 @@ jobs:
           # You can swap them out with your own user credentials.
           user_name: github-actions[bot]
           user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          cname: docs.corescopic.com
