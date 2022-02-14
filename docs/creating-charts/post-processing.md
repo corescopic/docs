@@ -7,7 +7,7 @@ sidebar_position: 5
 Post Processing allows you to customize data before it is rendered as a chart, table or number. While the data source already provides powerful features to select, aggregate and group data, some use-cases may require more customization that isn't possible or is very complicated with database queries.
 
 > While post-processing allows powerful customization, the processing will happen in the browser. Due to this, all required data needs to be transmitted and execution may be comparatively slow.
-> Due to this, using the data source query instead of complicated post-processing scripts is recommended when possible.
+> Using the data source query instead of complicated post-processing scripts is recommended when possible.
 
 In the chart editor you may provide a post-processing script - by default this script will be:
 
@@ -58,6 +58,8 @@ For the example data provided above, you could transform the "accountType" to be
 # Sandbox
 
 The script will run in a sandboxed [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API). Due to the sandboxing, you may only access whitelisted functions like `parseInt` but can't access functions like `fetch`.
+
+> While the sandbox provides some protection against malicious code, you should not run untrusted post-processing code in your user account.
 
 Whitelisted functions and features currently are:
 
