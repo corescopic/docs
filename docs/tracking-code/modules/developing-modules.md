@@ -12,7 +12,7 @@ Modules are standalone JavaScript files that will get loaded using special scrip
 
 ```JavaScript
 const moduleId = document.currentScript.getAttribute('data-corescopic-module-id');
-const corescopicName = document.currentScript?.getAttribute('data-corescopic-name');
+const corescopicName = document.currentScript.getAttribute('data-corescopic-name');
 
 window[corescopicName].api.registerModule(moduleId, (config) => {
   console.log('Module has been set up');
@@ -39,10 +39,13 @@ The `config` parameter will be set to the `config` object is one is provided dur
 `module.js:`
 
 ```JavaScript
-export default function setup(config) {
+const moduleId = document.currentScript.getAttribute('data-corescopic-module-id');
+const corescopicName = document.currentScript.getAttribute('data-corescopic-name');
+
+window[corescopicName].api.registerModule(moduleId, (config) => {
   // Set up the module here
   console.log('Config:', config);
-}
+});
 ```
 
 `index.html:`
@@ -62,4 +65,4 @@ export default function setup(config) {
 </script>
 ```
 
-In your module, you may access the current corescopic tracker using `window[corescopicName].api`. Additional information about using the corescopic tracker API will be provided in the future.
+In your module, you may access the current corescopic tracker using `window[corescopicName].api`.
