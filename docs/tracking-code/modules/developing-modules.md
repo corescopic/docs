@@ -6,19 +6,25 @@ sidebar_position: 5
 
 Developing modules allows you to extend corescopic's functionality easily.
 
-Modules are ES6 modules that are `import`ed by the main corescopic tracker once it has been requested to import the script. A module should always `export default` a function that will be used to set up the module.
+Modules are standalone JavaScript files that will get loaded using special script tag parameter. After being loaded, a module should register with the corescopic tracker to indicate that it functions correctly.
 
 `module.js:`
+
 ```JavaScript
-export default function setup(config) {
-  // Set up the module here
+const moduleId = document.currentScript.getAttribute('data-corescopic-module-id');
+const corescopicName = document.currentScript?.getAttribute('data-corescopic-name');
+
+window[corescopicName].api.registerModule(moduleId, (config) => {
   console.log('Module has been set up');
-}
+});
 ```
+
+> To stay compatible with the tracker's namespacing feature, `window[corescopicName]` should always be used instead of accessing `window.corescopic` directly
 
 If the module is now loaded with corescopic, this function will be called:
 
 `index.html:`
+
 ```HTML
 <script>
   window.corescopic = window.corescopic || {};
@@ -31,6 +37,7 @@ If the module is now loaded with corescopic, this function will be called:
 The `config` parameter will be set to the `config` object is one is provided during load, otherwise it will be `undefined`:
 
 `module.js:`
+
 ```JavaScript
 export default function setup(config) {
   // Set up the module here
@@ -39,6 +46,7 @@ export default function setup(config) {
 ```
 
 `index.html:`
+
 ```HTML
 <script>
   window.corescopic = window.corescopic || {};
@@ -54,4 +62,4 @@ export default function setup(config) {
 </script>
 ```
 
-In your module, you may access the current corescopic tracker using `window.corescopic.api`. Additional information about using the corescopic tracker API will be provided in the future.
+In your module, you may access the current corescopic tracker using `window[corescopicName].api`. Additional information about using the corescopic tracker API will be provided in the future.
