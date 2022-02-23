@@ -2,11 +2,13 @@
 sidebar_position: 6
 ---
 
-# CQL
+# Raw CQL
 
 Under the hood, corescopic uses the corescopic Query Language (CQL) to fetch chart data and create statistics. CQL is written in JSON but most of its terminology is based on SQL's namings. Having a robust understanding of SQL will help getting started with CQL quickly.
 
 CQL is built to provide a better experience creating statistics by adding small abstractions over SQL, allowing the query to be easily parsed and displayed by the chart creator and allowing it to be easily verified by our backend. Internally CQL queries will be transpiled into SQL queries to be run against the events database so all rules of SQL also apply to CQL queries.
+
+While the corescopic frontend provides you with a visual builder for CQL, you may decide to use the raw CQL editor instead.
 
 ## Structure
 
@@ -28,6 +30,7 @@ The names always follow the format of `tableName.columnNameOrModifier[.subColumn
 Next a column name or modifier must be added. Examples for this is `events.name` to get the event name, `events.count` to count the number of events or `sessions.user_id` to get the user ID of a session.
 
 The `events` table contains the following columns and modifiers:
+
 - `events.name`: Name of the event
 - `events.tracker_id`: Tracker ID used for the event
 - `events.session_id`: Connected session ID. This might be -1 if collected in unconsented mode
@@ -39,6 +42,7 @@ Any additional data you provided when adding the event can be accessed using `ev
 Contents can be modified by using the submodifier: E.g. using `events.contents.purchase_value.sum` to sum all values or `events.contents.purchase_value.count` to count the number of items with the specific property.
 
 The `sessions` table contains the following columns and modifiers:
+
 - `sessions.id`: ID of the session
 - `sessions.user_id`: Connected user ID
 - `sessions.isBounce`: `true` if the user has bounced
@@ -100,8 +104,8 @@ This is what the `where` array might look like:
 This will select all rows that occured between 01/01/2020 and 7 days ago and where the `events.name` is `purchase` or `lead`. When using SQL, this could be translated into
 
 ```SQL
-WHERE 
-  events.timestamp < DateAdd(DD,-7,GETDATE()) AND events.timestamp > 2021-01-01 00-00-00 
+WHERE
+  events.timestamp < DateAdd(DD,-7,GETDATE()) AND events.timestamp > 2021-01-01 00-00-00
   AND
   (
     events.name = 'purchase'
@@ -159,6 +163,7 @@ This CQL Snippet is valid as there is a connecting `OR` between both comparisons
 A connection clause should always have `"clause": "connection"` and can have a `type` of `AND` or `OR`.
 
 OR-Connection:
+
 ```JSON
 {
   "clause": "connection",
@@ -167,6 +172,7 @@ OR-Connection:
 ```
 
 AND-Connection:
+
 ```JSON
 {
   "clause": "connection",
@@ -183,6 +189,7 @@ When comparing timestamps, it is advices to use [Time clauses](#time-clause) ins
 A compare clause should also always have a `column`, which is the column name that should be compared against, and a `value` which is the value to compare to.
 
 Equal-comparison:
+
 ```JSON
 {
   "clause": "compare",
@@ -193,6 +200,7 @@ Equal-comparison:
 ```
 
 Greater-comparison:
+
 ```JSON
 {
   "clause": "compare",
@@ -222,6 +230,7 @@ For example, only get rows before 01/01/2022:
 ```
 
 Only get rows from the last 7 days:
+
 ```JSON
 {
   "clause": "time",
@@ -245,7 +254,7 @@ A special case is the `BETWEEN` clause as it takes two time values: A lower and 
 
 #### Time values
 
-The value can be provided in two formats: absolute or relative. 
+The value can be provided in two formats: absolute or relative.
 
 An absolute time value describes a point in time that will not change, regardless of when the query has been executed. Absolute time values should have the format `YYYY-MM-DD HH:MM:SS`, e.g. `2021-01-01 00:00:00`.
 
@@ -253,9 +262,10 @@ Relative time values describe values relative to the time the query is executed.
 
 For example, to get the time 7 days in the past, use `NOW + 7d`. To get the time 23 hours in the past you might use `NOW - 23h` or use `NOW - 1d + 1h`.
 
-Please note that whitespaces are ignored in relative time values, resulting in `NOW+7d`, `NOW + 7 d`, `NOW  +   7d` and `NOW+ 7  d` all being valid values.
+Please note that whitespaces are ignored in relative time values, resulting in `NOW+7d`, `NOW + 7 d`, `NOW + 7d` and `NOW+ 7 d` all being valid values.
 
 Valid units are:
+
 - ms: Milliseconds
 - s: seconds
 - m: Minutes
@@ -326,10 +336,11 @@ While not being very useful, this snippet shows an example of multi-level groupi
 ```
 
 This example can be compared to this SQL code:
+
 ```SQL
-WHERE 
-  events.name = 'not grouped' 
-  OR 
+WHERE
+  events.name = 'not grouped'
+  OR
   (
     events.name = 'one'
     OR
@@ -346,9 +357,15 @@ WHERE
 ## Examples
 
 1. Selecting Event in the last 30 minutes that have a name of "purchase" or a value > 0
+
 ```json
 {
-  "exports": ["events.name", "events.contents.amount", "events.contents.orderId", "events.count"],
+  "exports": [
+    "events.name",
+    "events.contents.amount",
+    "events.contents.orderId",
+    "events.count"
+  ],
   "where": [
     {
       "type": "TIME",
@@ -380,8 +397,9 @@ WHERE
 ```
 
 This is comparable to this SQL Query:
+
 ```SQL
-SELECT 
+SELECT
   events.name, events.contents.amount, events.contents.orderId, count(events.*)
 FROM
   events
@@ -398,6 +416,7 @@ WHERE
 ```
 
 2. Selecting sessions that have been created aftert 02.01.2021 but before 7 days ago
+
 ```JSON
 {
     "exports": ["sessions.id"],
@@ -414,6 +433,7 @@ WHERE
 ```
 
 3. Select event names and user agents with session ids
+
 ```JSON
 {
   "exports": ["events.name", "events.contents.user_agent", "session.id"],
@@ -427,6 +447,7 @@ WHERE
   ]
 }
 ```
+
 Please note that this requires a table join and you can access the session ID the events table, too. This results in this query returning the same results but with a better performance:
 
 ```JSON
@@ -444,6 +465,7 @@ Please note that this requires a table join and you can access the session ID th
 ```
 
 4. Get the total number of events
+
 ```JSON
 {
   "exports": ["events.count"],
@@ -452,6 +474,7 @@ Please note that this requires a table join and you can access the session ID th
 ```
 
 5. Sum the total value of all events with a value greater 0
+
 ```JSON
 {
     "exports": ["events.contents.value.sum"],

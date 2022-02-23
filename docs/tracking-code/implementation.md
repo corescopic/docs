@@ -39,6 +39,8 @@ You can set a tracker's namespace by setting `data-name` on the main script, e.g
 Please note that all interactions with this tracker must now be made over `window.secondCorescopicTracker` instead of `window.corescopic`.
 
 ## ✨ Next steps:
+
+- Customize [the tracker configuration](/docs/tracking-code/configuration) to fit your needs
 - Implement [Consented Mode](/docs/tracking-code/consent-mode) to get more data
 - Track [events](/docs/tracking-code/events) to gain more insights
 - Import [additional modules](/docs/tracking-code/modules/usage) to fit your page
